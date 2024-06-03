@@ -1,0 +1,56 @@
+services:
+  firstapp-backend:
+    container_name: companyname-firstapp-backend
+    build:
+      target: php
+      args:
+        uid: ${UID}
+      context: ./
+    command: ["php", "apps/firstapp/backend/bin/server.php"]
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    depends_on:
+      firstapp-migrator:
+        condition: service_completed_successfully
+    networks:
+      - companyname
+    env_file:
+      - ./.env
+
+  nginx:
+    container_name: companyname-shared-nginx
+    image: nginx:1.26.0-alpine3.19-slim
+    restart: unless-stopped
+    volumes:
+      - ./etc/nginx/${NGINX_CONFIG:-prod}.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - companyname
+    depends_on:
+      - firstapp-backend
+    ports:
+      - ${NGINX_HTTP_PORT:-8080}:80
+
+  firstapp-migrator:
+    container_name: companyname-firstapp-migrator
+    build:
+      target: php
+      args:
+        uid: ${UID}
+      context: ./
+    command: ["php", "vendor/bin/doctrine-migrations", "migrate", "--no-interaction"]
+    env_file:
+      - ./.env
+    environment:
+      - DATABASE_NAME=${FIRSTAPP_DATABASE_NAME}
+    volumes:
+      - ./vendor:/app/vendor
+      - ./etc/migrator/migrations.php:/app/migrations.php
+      - ./etc/migrator/migrations-db.php:/app/migrations-db.php
+      - ./migrations/firstapp:/app/migrations
+    networks:
+      - companyname
+
+networks:
+  companyname:
+    driver: bridge

@@ -1,0 +1,10 @@
+.env
+vendor
+.psalm
+.phpunit.result.cache
+tools/.phpunit.result.cache
+infection.html
+/apps/*/*/var/
+!/apps/*/*/var/.gitkeep
+postgres-data
+docker-compose.override.yml

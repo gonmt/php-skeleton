@@ -1,0 +1,75 @@
+{
+  "require": {
+    "php": ">=8.3",
+
+    "symfony/framework-bundle": "^7",
+    "symfony/messenger": "^7",
+    "symfony/dotenv": "^7",
+    "symfony/yaml": "^7",
+    "symfony/validator": "^7",
+    "symfony/cache": "^7",
+    "symfony/monolog-bundle": "^3.10",
+    "symfony/psr-http-message-bridge": "^7.0",
+
+    "ramsey/uuid": "^4.7",
+
+    "doctrine/dbal": "^3",
+    "doctrine/orm": "^2",
+    "doctrine/migrations": "^3.6",
+
+    "lambdish/phunctional": "^2",
+
+    "react/async": "^4.2.0",
+    "react/http": "^1.10.0",
+    "nyholm/psr7": "^1.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "CompanyName\\": "src/",
+      "CompanyName\\Apps\\FirstApp\\Backend\\": "apps/firstapp/backend/src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CompanyName\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "ext-xdebug": "*",
+    "ext-yaml": "*",
+    "codelytv/coding-style": "^1.2",
+    "phpunit/phpunit": "^10.4",
+    "fakerphp/faker": "^1.23",
+    "phpat/phpat": "^0.10.10",
+    "mockery/mockery": "^1.6",
+    "phpmd/phpmd": "^2.15",
+    "infection/infection": "^0.27.11",
+    "rector/rector": "^1.1",
+    "vimeo/psalm": "^5.24",
+
+    "behat/behat": "^3.13",
+    "friends-of-behat/mink-extension": "2.6.1",
+    "friends-of-behat/symfony-extension": "2.3.1",
+    "behat/mink-browserkit-driver": "2.1.0"
+  },
+  "scripts": {
+    "create-env-file": "[[ -f .env ]] || cp env.example .env",
+    "init-local-env": [
+      "@create-env-file",
+      "cp etc/git-hooks/pre-commit .git/hooks/pre-commit",
+      "[[ -f docker-compose.override.yml ]] || cp etc/docker-compose/docker-compose.override.yml.local docker-compose.override.yml"
+    ],
+    "init-public-env": [
+      "@create-env-file",
+      "[[ -f docker-compose.override.yml ]] || cp etc/docker-compose/docker-compose.override.yml.public docker-compose.override.yml"
+    ],
+    "rename-project": [
+      "etc/rename-project.sh"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "infection/extension-installer": true
+    }
+  }
+}

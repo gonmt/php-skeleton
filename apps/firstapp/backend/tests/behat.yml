@@ -1,0 +1,17 @@
+firstapp_backend:
+  extensions:
+    FriendsOfBehat\SymfonyExtension:
+      kernel:
+        class: CompanyName\Apps\FirstApp\Backend\FirstAppBackendKernel
+      bootstrap: apps/firstapp/backend/bootstrap.php
+    Behat\MinkExtension:
+      sessions:
+        symfony:
+          symfony: ~
+      base_url: ''
+
+  suites:
+    health_check:
+      paths: [ apps/firstapp/backend/tests/features/health_check ]
+      contexts:
+        - CompanyName\Tests\Shared\Infrastructure\Behat\ApiContext

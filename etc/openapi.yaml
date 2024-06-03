@@ -1,0 +1,56 @@
+openapi: 3.0.3
+info:
+  title: CompanyName api
+
+  contact:
+    email: torresgonzalom@gmail.com
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/
+tags:
+  - name: Health check
+paths:
+  /health-check:
+    get:
+      tags:
+        - health check
+      summary: Api health status
+      description: Return api health status
+      operationId: healthCheck
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+components:
+  schemas:
+    HealthCheck:
+      required:
+        - api-status
+      type: object
+      properties:
+        api-status:
+          type: string
+          example: ok
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        status:
+          type: integer
+          format: int32
+          example: 404
+        code:
+          type: string
+          example: error_code
+        title:
+          type: string
+          example: Error Title
+        detail:
+          type: string
+          example: Error Detail

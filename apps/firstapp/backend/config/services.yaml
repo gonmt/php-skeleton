@@ -1,0 +1,58 @@
+services:
+  _defaults:
+    autoconfigure: true
+    autowire: true
+
+  # Configure
+  _instanceof:
+    CompanyName\Shared\Domain\Bus\Command\CommandHandler:
+      tags: ['companyname.command_handler']
+
+    CompanyName\Shared\Domain\Bus\Query\QueryHandler:
+      tags: ['companyname.query_handler']
+
+    CompanyName\Shared\Domain\Bus\Event\DomainEventSubscriber:
+      tags: [ 'companyname.domain_event_subscriber' ]
+
+  CompanyName\Apps\FirstApp\Backend\Controller\:
+    resource: '../src/Controller'
+    tags: ['controller.service_arguments']
+
+  # Wire
+  CompanyName\:
+    resource: '../../../../src'
+
+  # -- TAGGING --
+  CompanyName\Shared\Infrastructure\Symfony\AddJsonBodyToRequestListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+  CompanyName\Shared\Infrastructure\Symfony\ApiExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onException }
+
+  # -- APP DEFINITIONS --
+  # Command/Query Handlers
+  CompanyName\Shared\Infrastructure\Bus\Command\InMemoryAsyncCommandBus:
+    arguments: [!tagged companyname.command_handler]
+
+  CompanyName\Shared\Infrastructure\Bus\Query\InMemorySymfonyQueryBus:
+    arguments: [!tagged companyname.query_handler]
+  # Event Bus
+  CompanyName\Shared\Infrastructure\Bus\Event\InMemory\InMemoryAsyncEventBus:
+    arguments: [ !tagged companyname.domain_event_subscriber ]
+    lazy: true
+
+  Doctrine\ORM\EntityManager:
+    factory: [ CompanyName\Shared\Infrastructure\Doctrine\DoctrineEntityManagerFactory, create ]
+    arguments:
+      - driver: '%env(DATABASE_DRIVER)%'
+        host: '%env(DATABASE_HOST)%'
+        port: '%env(DATABASE_PORT)%'
+        dbname: '%env(FIRSTAPP_DATABASE_NAME)%'
+        user: '%env(DATABASE_USER)%'
+        password: '%env(DATABASE_PASSWORD)%'
+      - '%env(APP_ENV)%'
+    tags:
+      - { name: companyname.database_connection }
+    public: true

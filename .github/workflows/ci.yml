@@ -1,0 +1,30 @@
+name: ci.yml
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🐳 Up services
+        run: make start-local
+
+      - name: ⚠️ Running refactor suggestions
+        run: make refactor-suggestions
+        continue-on-error: true
+
+      - name: ✅ Running tests
+        run: make test
+
+      - name: 🏁 Running static analysis
+        run: make static-analysis
+
+      - name: 🏗️ Running architecture tests
+        run: make test-architecture
+
+      - name: 🔦 Running code style check
+        run: make lint
+
+      - name: 🔎 Running mess detector
+        run: make mess-detector

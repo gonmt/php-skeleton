@@ -1,0 +1,4 @@
+health-check_get:
+  path: /health-check
+  controller: CompanyName\Apps\FirstApp\Backend\Controller\HealthCheck\HealthCheckGetController
+  methods:  [GET]

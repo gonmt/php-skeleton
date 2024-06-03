@@ -1,0 +1,2 @@
+imports:
+  - apps/firstapp/backend/tests/behat.yml
